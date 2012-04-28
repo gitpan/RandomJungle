@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               RandomJungle
-version:            0.02
+version:            0.03
 abstract:           Library to manipulate RandomJungle data
 author:
     - Robert R. Freimuth (rrfreimuth2@yahoo.com)
