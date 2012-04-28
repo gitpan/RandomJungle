@@ -5,9 +5,9 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
     NAME         => 'RandomJungle',
-    VERSION_FROM => 'lib/Jungle.pm', # finds \$VERSION
+    VERSION_FROM => 'Changes', # finds \$VERSION
     AUTHOR       => 'Robert R. Freimuth (rrfreimuth2@yahoo.com)',
-    ABSTRACT     => 'Consolidated interface for RandomJungle data',
+    ABSTRACT     => 'Library to manipulate RandomJungle data',
     PREREQ_PM    => {
                      'Test::Simple' => 0.44,
                      'Test::Warn' => 0.21,
