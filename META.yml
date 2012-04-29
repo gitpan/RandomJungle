@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               RandomJungle
-version:            0.03
+version:            0.04
 abstract:           Library to manipulate RandomJungle data
 author:
     - Robert R. Freimuth (rrfreimuth2@yahoo.com)
@@ -11,9 +11,11 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
+    DBM::Deep:          1.0015
     Devel::StackTrace:  1.22
     Test::Simple:       0.44
     Test::Warn:         0.21
+    XML::Twig:          3.34
 no_index:
     directory:
         - t

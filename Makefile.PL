@@ -12,5 +12,7 @@ WriteMakefile(
                      'Test::Simple' => 0.44,
                      'Test::Warn' => 0.21,
                      'Devel::StackTrace' => 1.22,
+                     'DBM::Deep' => 1.0015,
+                     'XML::Twig' => 3.34,
                     },
 );

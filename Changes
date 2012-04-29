@@ -1,6 +1,10 @@
 Revision history for Perl distribution RandomJungle
 Latest version of this distribution:
-$VERSION = 0.03
+$VERSION = 0.04
+
+0.04 Sat Apr 28 19:20:00 2012
+    - Added 2 dependencies to Makefile.PL
+    - The versions of the files contained in this release are the same as for 0.01
 
 0.03 Sat Apr 28 12:45:00 2012
     - Fixed the structure of /lib
