@@ -29,4 +29,3 @@ t/testdata_20samples_10vars_invalid_header_IID.raw
 t/testdata_20samples_10vars_invalid_header_PHENOTYPE.raw
 t/testdata_20samples_10vars_invalid_header_SEX.raw
 scripts/RJ_example.pl
-META.yml                                 Module meta-data (added by MakeMaker)

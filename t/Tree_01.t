@@ -10,7 +10,7 @@ use Test::Warn;
 use RandomJungle::Jungle;
 use RandomJungle::TestData qw( get_exp_data );
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 # This file contains tests for the following methods in RandomJungle::Tree:
 #   new( %params )
@@ -20,6 +20,7 @@ our $VERSION = 0.01;
 #   get_variables( variable_labels => 1 )
 #   classify_data( $data ) [including validation of $data]
 #   classify_data( $data, as_node => 1 )
+#   classify_data( $data, skip_validation => 1 )
 
 #*************************************************
 
@@ -265,6 +266,13 @@ BEGIN { use_ok( 'RandomJungle::Tree' ); }
 		my $pred_pheno = $tree->classify_data( $href->{classification_data} );
 		is( $pred_pheno, undef, 'classify_data() returns undef when given truncated data' );
 		like( $tree->err_str, qr/undef value obtained from data array/, 'classify_data() sets err_str when given truncated data' );
+	}
+
+	# Test with skip_validation => 1
+
+	{
+		my $retval = $tree->classify_data( [ 0, 1, 2, 'a', 2, 1, 0 ], skip_validation => 1 );
+		is( $retval, undef, 'classify_data( skip_validation => 1 ) returns undef with invalid data' );
 	}
 }
 

@@ -21,7 +21,7 @@ Version 0.04
 
 =cut
 
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 our $ERROR; # used if new() fails
 
 =head1 SYNOPSIS
@@ -43,6 +43,7 @@ This class uses RandomJungle::Tree::Node to represent the nodes in the tree.
 	# or RandomJungle::Tree::Node object for the terminal node
 	my $predicted_pheno = $tree->classify_data( $data );
 	my $node_obj = $tree->classify_data( $data, as_node => 1 );
+	my $node_obj = $tree->classify_data( $data, skip_validation => 1 );
 
 	my $node_obj = $tree->get_node_by_vector_index( $vi ) || warn $tree->err_str;
 
@@ -199,10 +200,13 @@ sub get_variables
 
 Classifies $data using this tree.  Returns the terminal value (predicted phenotype) by default.
 If as_node => 1 is specified, returns a RandomJungle::Tree::Node object that represents the
-terminal node after classification.
+terminal node after classification.  If skip_validation => is specified, the data validation step
+will be skipped; this is a performance improvement but if invalid data is present the classification
+will fail and undef will be returned.  Use skip_validation with caution.
 
 	my $predicted_pheno = $tree->classify_data( $data );
 	my $node_obj = $tree->classify_data( $data, as_node => 1 );
+	my $node_obj = $tree->classify_data( $data, skip_validation => 1 );
 
 $data must be an arrayref containing the data values to be classified.  The order of the
 columns must be the same as that which was used to construct the tree (see RAW file).
@@ -223,10 +227,16 @@ sub classify_data
 	# Sets err_str and returns undef if an error occurs (e.g., $data contains a value that is not 0, 1, or 2).
 	# Returns the terminal value (predicted phenotype) by default.  If as_node => 1 is specified,
 	# returns a RJ::Tree::Node object that represents the terminal node after classification.
+	# If skip_validation => is specified, the data validation step will be skipped prior to
+	# classification (this is a performance improvement).  If invalid data is present the
+	# classification will fail and undef will be returned.
 
 	my ( $self, $data, %args ) = @_;
 
-	$self->_validate_data( $data ) || return; # checks structure and content, not # elements
+	unless( defined $args{skip_validation} && $args{skip_validation} == 1 )
+	{
+		$self->_validate_data( $data ) || return; # checks structure and content, not # elements
+	}
 
 	my $nodes = $self->{rj_tree};
 	my $node_num = 0; # index within the varID/values/branches vector (start at root = 0)

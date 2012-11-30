@@ -488,6 +488,7 @@ Returns an href containing a summary of the data that is loaded into the db:
 	my $href = $rj->summary_data();
 
 $href contains the output of other methods in this class, and it has the following structure:
+
 	filenames => get_filenames(),
 	rj_params => get_rj_input_params(),
 	variable_labels => get_variable_labels() and see below,
@@ -496,6 +497,7 @@ $href contains the output of other methods in this class, and it has the followi
 
 The keys variable_labels, sample_labels, and tree_ids all point to hrefs.
 Each href has the following structure:
+
 	all_labels => $aref, (for variable_labels and sample_labels)
 	all_ids    => $aref, (for tree_ids only)
 	first => $val, (the first element of the all* aref)

@@ -24,7 +24,7 @@ Version 0.05
 
 =cut
 
-our $VERSION = 0.05;
+our $VERSION = 0.06;
 our $ERROR; # used if new() fails
 
 =head1 SYNOPSIS
@@ -218,8 +218,8 @@ sub get_tree_ids
 	my ( $self ) = @_;
 	my $db = $self->{db};
 	#my @ids = sort { $a <=> $b } keys %{ $db->{XML}{tree_data} };
-	#return \@ids;
-	my @ids = @{ $db->{XML}{tree_ids} };
+	#my @ids = @{ $db->{XML}{tree_ids} };
+	my @ids = split( "\t", $db->{XML}{tree_ids_str} );
 	return \@ids;
 }
 
@@ -378,7 +378,8 @@ sub get_variable_labels
 	# Returns an aref of the variable labels from the RAW file (expected:  SEX PHENOTYPE var1 ...)
 	my ( $self ) = @_;
 	my $db = $self->{db};
-	my @data = @{ $db->{RAW}{variable_labels} };
+	#my @data = @{ $db->{RAW}{variable_labels} };
+	my @data = split( "\t", $db->{RAW}{variable_labels_str} );
 	return \@data;
 }
 
@@ -395,7 +396,8 @@ sub get_sample_labels
 	# Returns an aref of sample labels from the IID column of the RAW file
 	my ( $self ) = @_;
 	my $db = $self->{db};
-	my @data = @{ $db->{RAW}{sample_labels} };
+	#my @data = @{ $db->{RAW}{sample_labels} };
+	my @data = split( "\t", $db->{RAW}{sample_labels_str} );
 	return \@data;
 }
 
@@ -563,7 +565,8 @@ sub _load_xml_file
 	$db->{filename} = $rj_xml->get_filename;
 	$db->{options} = $rj_xml->get_RJ_input_params;
 	$db->{tree_data} = $rj_xml->get_tree_data;
-	$db->{tree_ids} = $rj_xml->get_tree_ids;
+	#$db->{tree_ids} = $rj_xml->get_tree_ids;
+	$db->{tree_ids_str} = join( "\t", @{ $rj_xml->get_tree_ids } );
 
 	return 1;
 }
@@ -629,17 +632,24 @@ sub _load_raw_file
 	$db = $db->{RAW} = {}; # will overwrite existing
 
 	$db->{filename} = $rj_raw->get_filename;
-	$db->{variable_labels} = $rj_raw->get_variable_labels;
-	$db->{sample_labels} = $rj_raw->get_sample_labels;
 	$db->{header_labels} = $rj_raw->get_header_labels;
 	$db->{raw_data} = $rj_raw->get_sample_data;
 
+	#$db->{variable_labels} = $rj_raw->get_variable_labels;
+	$db->{variable_labels_str} = join( "\t", @{ $rj_raw->get_variable_labels } );
+
+	#$db->{sample_labels} = $rj_raw->get_sample_labels;
+	my $sample_lbls = $rj_raw->get_sample_labels;
+	$db->{sample_labels_str} = join( "\t", @$sample_lbls );
+
 	# add index to sample hashes so can easily index into OOB matrix
-	my $num_samples = scalar @{ $db->{sample_labels} };
+	#my $num_samples = scalar @{ $db->{sample_labels} };
+	my $num_samples = scalar @$sample_lbls;
 
 	foreach my $i ( 0 .. $num_samples-1 )
 	{
-		my $sample_iid = $db->{sample_labels}[$i];
+		#my $sample_iid = $db->{sample_labels}[$i];
+		my $sample_iid = $sample_lbls->[$i];
 		$db->{raw_data}{$sample_iid}{index} = $i;
 	}
 
@@ -726,7 +736,8 @@ $dbm_deep_object
 				var_id_str => varID string from XML, e.g., '((490,967,1102,...))'
 				values_str => values string from XML, e.g., '(((0)),((0)),((1)),...)'
 				branches_str => branches string from XML, e.g., '((1,370),(2,209),(3,160),...)'
-		tree_ids => [ $tree_id, ... ]
+		#tree_ids => [ $tree_id, ... ] # no longer used, stored as string for efficient retrieval
+		tree_ids_str => join( "\t", $tree_id, ... )
 	OOB
 		filename => $filename
 		matrix => [ $line, ... ]
@@ -734,8 +745,10 @@ $dbm_deep_object
 	RAW
 		filename => $filename
 		header_labels => [ FID, IID, PAT, MAT ] (expected)
-		variable_labels => [ SEX, PHENOTYPE, rs... ]
-		sample_labels => [ $iid, ... ]
+		#variable_labels => [ SEX, PHENOTYPE, rs... ] # no longer used, stored as string for efficient retrieval
+		variable_labels_str => join( "\t", qw( SEX PHENOTYPE rs... ) )
+		#sample_labels => [ $iid, ... ] # no longer used, stored as string for efficient retrieval
+		sample_labels_str => join( "\t", $iid, ... )
 		raw_data
 			$iid
 				SEX => $val

@@ -9,7 +9,7 @@ use Test::Warn;
 
 use RandomJungle::TestData qw( get_exp_data );
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 #*************************************************
 
@@ -314,5 +314,15 @@ BEGIN { use_ok( 'RandomJungle::File::DB' ); }
 	my $retval = $rjdb->_sample_label_to_index( undef );
 	is( $retval, undef, '_sample_label_to_index() returns undef when label is undefined' );
 }
+
+=pod
+# Clean up
+{
+	my $rjdb = RandomJungle::File::DB->new( db_file => $db_file );
+	$rjdb->{db}->unlock; # workaround for DBM::Deep (see http://www.perlmonks.org/?node_id=974578)
+	$rjdb->{db}->clear;
+	unlink( $db_file ) || warn $!;
+}
+=cut
 
 done_testing();
